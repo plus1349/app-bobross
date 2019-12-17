@@ -1,6 +1,7 @@
 env/
 .idea/
 media/
+uenv/
 __pycache__/
 
 log/*

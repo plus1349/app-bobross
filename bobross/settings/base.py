@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # 'django_hosts',
+    'categories',
     # 'paintings',
     'users'
 ]

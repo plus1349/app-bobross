@@ -1,0 +1,14 @@
+{% load i18n users_tags%}
+
+{% trans 'Change language' %}
+<form action="/i18n/setlang/" method="post" style="display: inline;">{% csrf_token %}
+  <input type="hidden" name="next" value="{{ request.path }}"/>
+  <div style="display: inline;">
+    <select name="language" onchange="javascript:form.submit()">
+      {% get_languages %}
+      {% for language in languages %}
+        <option value="{{ language.0 }}"{% ifequal LANGUAGE_CODE language.0 %} selected="selected"{% endifequal %}>{{ language.1 }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</form>
