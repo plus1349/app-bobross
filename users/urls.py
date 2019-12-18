@@ -1,8 +1,8 @@
 from django.urls import path
 
-from .views import users
+from .views import UserPaintingListView
 
 
 urlpatterns = [
-    path('', users, name='user_list'),
+
 ]

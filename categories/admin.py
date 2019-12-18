@@ -1,17 +1,9 @@
-from django.contrib import admin
-
+from django.contrib.admin import register, ModelAdmin
 from .models import Category
 
 
-# class CategoryTranslationAdmin(admin.TabularInline):
-#     model = CategoryTranslation
-#     extra = 0
-#     classes = ('collapse',)
-
-
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    # inlines = (CategoryTranslationAdmin,)
-    list_editable = ('enabled',)
-    list_display = ('enabled', 'title')
+@register(Category)
+class CategoryAdmin(ModelAdmin):
+    list_display = ('id', 'enabled', 'position', 'title')
     list_display_links = ('title',)
+    list_editable = ('enabled', 'position')

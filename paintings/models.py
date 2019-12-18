@@ -1,3 +1,64 @@
-from django.db import models
+from django.db.models import (
+    CASCADE, SET_NULL,
+    BooleanField, CharField, ForeignKey, ImageField, PositiveIntegerField,
+    Model
+)
+from django.utils.translation import ugettext_lazy as _
 
-# Create your models here.
+from bobross.utils import upload_to
+from categories.models import Category
+
+
+class Painting(Model):
+    enabled = BooleanField(_('enabled'), default=True)
+    free = BooleanField(_('free'), default=False)
+    position = PositiveIntegerField(_('position'), blank=True, null=True)
+    category = ForeignKey(Category, null=True, on_delete=SET_NULL, related_name='paintings', verbose_name=_('category'))
+    title = CharField(_('title'), null=True, max_length=255)
+    image = ImageField(_('image'), null=True, upload_to=upload_to)
+
+    class Meta:
+        db_table = 'paintings'
+        ordering = ('position', 'title')
+        verbose_name = _('painting')
+        verbose_name_plural = _('paintings')
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def file_directory(self):
+        return 'paintings/images/'
+
+    @property
+    def get_layers(self):
+        return self.layers.filter(image__isnull=False, painting=self)
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            self.position = self.id
+        super().save(*args, **kwargs)
+
+
+class PaintingLayer(Model):
+    position = PositiveIntegerField(_('position'), blank=True, null=True)
+    painting = ForeignKey(Painting, null=True, on_delete=CASCADE, related_name='layers', verbose_name=_('painting'))
+    image = ImageField(_('image'), null=True, upload_to=upload_to)
+
+    class Meta:
+        db_table = 'painting_layers'
+        ordering = ('painting', 'position',)
+        verbose_name = _('painting layer')
+        verbose_name_plural = _('painting layers')
+
+    def __str__(self):
+        return "{painting} layer {position}".format(painting=self.painting.title, position=self.position)
+
+    @property
+    def file_directory(self):
+        return 'paintings/layers/images/'
+
+    def save(self, *args, **kwargs):
+        if self.position is None:
+            self.position = self.id
+        super().save(*args, **kwargs)

@@ -22,7 +22,7 @@ INSTALLED_APPS = [
 
     # 'django_hosts',
     'categories',
-    # 'paintings',
+    'paintings',
     'users'
 ]
 
