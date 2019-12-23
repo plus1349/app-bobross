@@ -2,5 +2,6 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path('users/', include('users.urls')),
+    path('paintings/', include('paintings.urls')),
+    # path('users/', include('users.urls')),
 ]

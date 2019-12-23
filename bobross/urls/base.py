@@ -5,12 +5,9 @@ from django.shortcuts import HttpResponse
 from django.urls import path, include
 
 
-def index(request):
-    return HttpResponse("INDEX")
-
-
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include('api.urls')),
+
     path('i18n/', include('django.conf.urls.i18n')),
-    path('', index),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

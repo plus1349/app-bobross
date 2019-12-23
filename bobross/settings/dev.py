@@ -5,13 +5,13 @@ from .base import *
 
 DEBUG = True
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bobross_dev',
-        'USER': 'root',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'bobross_dev',
+#         'USER': 'mysql',
+#         'PASSWORD': 'password',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }

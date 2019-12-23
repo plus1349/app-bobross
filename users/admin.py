@@ -4,11 +4,14 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 
+# from rest_framework.authtoken.models import Token
+
 from .forms import UserCreateForm, UserUpdateForm
 from .models import User, UserPainting, UserPaintingLayer
 
 
 site.unregister(Group)
+# site.unregister(Token)
 
 
 class UserPaintingLayerAdmin(TabularInline):
@@ -43,7 +46,7 @@ class UserAdmin(BaseUserAdmin):
         (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
     )
     form = UserUpdateForm
-    list_display = ('id', 'name', 'email', 'is_superuser')
+    list_display = ('id', 'name', 'email', 'is_superuser', 'auth_token')
     list_display_links = ('name', 'email')
     list_filter = ('is_staff', 'is_superuser')
     readonly_fields = ('date_joined', 'last_login')
