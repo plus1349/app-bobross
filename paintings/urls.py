@@ -4,7 +4,7 @@ from .views import CategoryListAPIView, PaintingListAPIView, PaintingRetrieveAPI
 
 
 urlpatterns = [
-    path('', CategoryListAPIView.as_view(), name='category_list'),
-    path('<int:category>/', PaintingListAPIView.as_view(), name='painting_list'),
-    path('<int:category>/<int:painting>/', PaintingRetrieveAPIView.as_view(), name='painting_retrieve'),
+    path('categories/', CategoryListAPIView.as_view(), name='category_list'),
+    path('paintings/<int:category>/', PaintingListAPIView.as_view(), name='painting_list'),
+    path('paintings/<int:category>/<int:painting>/', PaintingRetrieveAPIView.as_view(), name='painting_retrieve'),
 ]
