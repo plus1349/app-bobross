@@ -39,7 +39,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.email = self.__class__.objects.normalize_email(self.email)
 
     @property
-    def get_paintings(self):
+    def paintings(self):
         return self.paintings.filter(user=self)
 
 
@@ -58,6 +58,10 @@ class UserPainting(Model):
 
     def __str__(self):
         return self.painting.title
+
+    @property
+    def layers(self):
+        return self.layers.filter(user_painting=self)
 
 
 class UserPaintingLayer(Model):

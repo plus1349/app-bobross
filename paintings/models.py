@@ -54,7 +54,7 @@ class Painting(Model):
         return 'paintings/images/'
 
     @property
-    def get_layers(self):
+    def layers(self):
         return self.layers.filter(image__isnull=False, painting=self)
 
     def save(self, *args, **kwargs):
