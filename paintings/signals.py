@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Painting, PaintingLayer
+from paintings.models import Painting, PaintingLayer
 
 
 @receiver(post_save, sender=Painting)

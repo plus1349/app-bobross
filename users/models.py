@@ -2,14 +2,13 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db.models import (
     CASCADE,
-    BooleanField, CharField, DateTimeField, EmailField, ForeignKey,
-    Model
+    BooleanField, CharField, DateTimeField, EmailField, ForeignKey, Model
 )
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from .managers import UserManager
 from paintings.models import Painting, PaintingLayer
+from users.managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):

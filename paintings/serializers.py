@@ -1,7 +1,7 @@
 from rest_framework.fields import SerializerMethodField
-from rest_framework.serializers import ModelSerializer
 
-from .models import Category, PaintingLayer, Painting
+from api.serializers import ModelSerializer
+from paintings.models import Category, PaintingLayer, Painting
 
 
 class CategoryListSerializer(ModelSerializer):
@@ -39,7 +39,6 @@ class PaintingRetrieveSerializer(ModelSerializer):
     class Meta:
         fields = ('id', 'free', 'title', 'image_url', 'layers')
         model = Painting
-
 
     def get_image_url(self, instance):
         return self.context['request'].build_absolute_uri(instance.image.url)

@@ -1,5 +1,6 @@
 from django.contrib.admin import register, ModelAdmin, TabularInline
-from .models import Category, Painting, PaintingLayer
+
+from paintings.models import Category, Painting, PaintingLayer
 
 
 @register(Category)

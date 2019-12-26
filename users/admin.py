@@ -6,18 +6,12 @@ from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.authtoken.models import Token
 
-from .forms import UserCreateForm, UserUpdateForm
-from .models import User, UserPainting, UserPaintingLayer
+from users.forms import UserCreateForm, UserUpdateForm
+from users.models import User, UserPainting, UserPaintingLayer
 
 
 site.unregister(Group)
 site.unregister(Token)
-
-
-class TokenAdmin(TabularInline):
-    model = Token
-    extra = 0
-    classes = ('collapse',)
 
 
 class UserPaintingLayerAdmin(TabularInline):
@@ -46,16 +40,15 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreateForm
     change_password_form = AdminPasswordChangeForm
     fieldsets = (
-        (None, {'fields': ('password',)}),
+        (None, {'fields': ('password', 'auth_token')}),
         (_('Personal info'), {'fields': ('name', 'email', 'phone')}),
         (_('Permissions'), {'fields': ('is_staff', 'is_superuser', 'user_permissions')}),
         (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
     )
     form = UserUpdateForm
-    inlines = (TokenAdmin,)
-    list_display = ('id', 'name', 'email', 'is_superuser', 'auth_token')
+    list_display = ('id', 'name', 'email', 'is_superuser')
     list_display_links = ('name', 'email')
     list_filter = ('is_staff', 'is_superuser')
-    readonly_fields = ('date_joined', 'last_login')
+    readonly_fields = ('date_joined', 'last_login', 'auth_token')
     search_fields = ('name', 'email')
     ordering = ()

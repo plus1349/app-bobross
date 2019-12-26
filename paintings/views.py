@@ -3,8 +3,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
-from .models import Category, Painting
-from .serializers import CategoryListSerializer, PaintingListSerializer, PaintingRetrieveSerializer
+from paintings.models import Category, Painting
+from paintings.serializers import CategoryListSerializer, PaintingListSerializer, PaintingRetrieveSerializer
 
 
 class CategoryListAPIView(ListAPIView):
