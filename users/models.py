@@ -2,13 +2,14 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db.models import (
     CASCADE,
-    BooleanField, CharField, DateTimeField, EmailField, ForeignKey, Model
+    BooleanField, CharField, DateTimeField, EmailField, ForeignKey,
+    Model
 )
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from paintings.models import Painting, PaintingLayer
 from users.managers import UserManager
+from paintings.models import Painting, PaintingLayer
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -80,4 +81,6 @@ class UserPaintingLayer(Model):
         verbose_name_plural = _('user painting layers')
 
     def __str__(self):
-        return "{painting} layer {id}".format(painting=self.user_painting.painting.title, id=self.id)
+        return "{painting} layer {id}".format(
+            painting=self.user_painting.painting.title, id=self.painting_layer.position
+        )

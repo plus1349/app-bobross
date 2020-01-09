@@ -1,6 +1,7 @@
 from django.db.models import (
     CASCADE, SET_NULL,
-    BooleanField, CharField, ForeignKey, ImageField, Model, PositiveIntegerField
+    BooleanField, CharField, ForeignKey, ImageField, PositiveIntegerField,
+    Model
 )
 from django.utils.translation import ugettext_lazy as _
 

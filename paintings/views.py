@@ -1,10 +1,15 @@
 from django.shortcuts import get_object_or_404
 
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_402_PAYMENT_REQUIRED
+from rest_framework.views import APIView
 
 from paintings.models import Category, Painting
 from paintings.serializers import CategoryListSerializer, PaintingListSerializer, PaintingRetrieveSerializer
+
+from users.models import UserPainting, UserPaintingLayer
 
 
 class CategoryListAPIView(ListAPIView):
@@ -15,6 +20,36 @@ class CategoryListAPIView(ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response({'results': serializer.data})
+
+
+class PaintingAddAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get_object(self):
+        return get_object_or_404(Painting, category=self.kwargs['category'], id=self.kwargs['painting'])
+
+    def post(self, request, *args, **kwargs):
+        painting = self.get_object()
+        if painting.free:
+            user_painting, created = UserPainting.objects.get_or_create(user=self.request.user, painting=painting)
+            if not created:
+                data = dict(success=False, error="User painting already exists.")
+                return Response(data=data, status=HTTP_400_BAD_REQUEST)
+
+            for painting_layer in painting.layers.all():
+                user_painting_layer, created = UserPaintingLayer.objects.get_or_create(
+                    user_painting=user_painting,
+                    painting_layer=painting_layer
+                )
+                if not created:
+                    data = dict(success=False, error="User painting layer already exists.")
+                    return Response(data=data, status=HTTP_400_BAD_REQUEST)
+
+            data = dict(success=True)
+            return Response(data=data, status=HTTP_200_OK)
+
+        data = dict(success=False, error="Painting is not free.")
+        return Response(data=data, status=HTTP_402_PAYMENT_REQUIRED)
 
 
 class PaintingListAPIView(ListAPIView):

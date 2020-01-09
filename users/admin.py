@@ -14,6 +14,12 @@ site.unregister(Group)
 site.unregister(Token)
 
 
+class TokenAdmin(TabularInline):
+    model = Token
+    extra = 0
+    classes = ('collapse',)
+
+
 class UserPaintingLayerAdmin(TabularInline):
     model = UserPaintingLayer
     extra = 0
@@ -40,15 +46,16 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserCreateForm
     change_password_form = AdminPasswordChangeForm
     fieldsets = (
-        (None, {'fields': ('password', 'auth_token')}),
+        (None, {'fields': ('password',)}),
         (_('Personal info'), {'fields': ('name', 'email', 'phone')}),
         (_('Permissions'), {'fields': ('is_staff', 'is_superuser', 'user_permissions')}),
         (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
     )
     form = UserUpdateForm
-    list_display = ('id', 'name', 'email', 'is_superuser')
+    inlines = (TokenAdmin,)
+    list_display = ('id', 'name', 'email', 'is_superuser', 'auth_token')
     list_display_links = ('name', 'email')
     list_filter = ('is_staff', 'is_superuser')
-    readonly_fields = ('date_joined', 'last_login', 'auth_token')
+    readonly_fields = ('date_joined', 'last_login')
     search_fields = ('name', 'email')
     ordering = ()
