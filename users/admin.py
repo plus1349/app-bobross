@@ -28,10 +28,15 @@ class UserPaintingLayerAdmin(TabularInline):
 
 @register(UserPainting)
 class UserPaintingAdmin(ModelAdmin):
+    fieldsets = (
+        (None, {'fields': ('finish',)}),
+        (_('Relations'), {'fields': ('user', 'painting')})
+    )
     inlines = (UserPaintingLayerAdmin,)
-    list_display = ('id', 'user', 'painting')
-    list_display_links = ('user', 'painting')
+    list_display = ('id', 'finish', 'user', 'painting')
+    list_display_links = ('id', 'finish', 'user', 'painting')
     list_filter = ('user',)
+    readonly_fields = ('finish',)
     search_fields = ('user', 'painting')
 
 

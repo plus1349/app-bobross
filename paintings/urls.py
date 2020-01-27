@@ -1,11 +1,16 @@
 from django.urls import path
 
-from paintings.views import CategoryListAPIView, PaintingAddAPIView, PaintingListAPIView, PaintingRetrieveAPIView
+from paintings.views import (
+    CategoryListAPIView, PaintingAddAPIView, PaintingCategoryListAPIView, PaintingListAPIView,PaintingNewListAPIView,
+    PaintingRetrieveAPIView
+)
 
 
 urlpatterns = [
     path('categories/', CategoryListAPIView.as_view()),
-    path('paintings/<int:category>/', PaintingListAPIView.as_view()),
-    path('paintings/<int:category>/<int:painting>/', PaintingRetrieveAPIView.as_view()),
-    path('paintings/<int:category>/<int:painting>/add/', PaintingAddAPIView.as_view()),
+    path('paintings/', PaintingListAPIView.as_view(), name='painting_list'),
+    path('paintings/new/', PaintingNewListAPIView.as_view(), name='painting_new_list'),
+    # path('paintings/<int:category>/', PaintingCategoryListAPIView.as_view()),
+    path('paintings/<int:id>/', PaintingRetrieveAPIView.as_view()),
+    path('paintings/<int:id>/add/', PaintingAddAPIView.as_view()),
 ]

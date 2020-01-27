@@ -1,4 +1,5 @@
 from django.contrib.admin import register, ModelAdmin, TabularInline
+from django.utils.translation import ugettext_lazy as _
 
 from paintings.models import Category, Painting, PaintingLayer
 
@@ -19,7 +20,9 @@ class PaintingLayerAdmin(TabularInline):
 @register(Painting)
 class PaintingAdmin(ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('enabled', 'free', 'position', 'category', 'title', 'image')}),
+        (None, {'fields': ('enabled', 'free')}),
+        (_('Relations'), {'fields': ('category',)}),
+        (_('Info'), {'fields': ('position', 'title', 'image')}),
     )
     inlines = (PaintingLayerAdmin,)
     list_display = ('id', 'enabled', 'category', 'position', 'title')

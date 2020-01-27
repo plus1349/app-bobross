@@ -1,7 +1,5 @@
 from django.db.models import (
-    CASCADE, SET_NULL,
-    BooleanField, CharField, ForeignKey, ImageField, PositiveIntegerField,
-    Model
+    BooleanField, CharField, ForeignKey, ImageField, PositiveIntegerField, Model, CASCADE, SET_NULL
 )
 from django.utils.translation import ugettext_lazy as _
 
@@ -36,7 +34,10 @@ class Painting(Model):
     enabled = BooleanField(_('enabled'), default=True)
     free = BooleanField(_('free'), default=False)
     position = PositiveIntegerField(_('position'), blank=True, null=True)
-    category = ForeignKey(Category, null=True, on_delete=SET_NULL, related_name='paintings', verbose_name=_('category'))
+    category = ForeignKey(
+        Category, blank=True, null=True, on_delete=SET_NULL,
+        related_name='paintings', verbose_name=_('category')
+    )
     title = CharField(_('title'), null=True, max_length=255)
     image = ImageField(_('image'), null=True, upload_to=upload_to)
 

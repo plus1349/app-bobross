@@ -53,6 +53,7 @@ class UserPainting(Model):
     class Meta:
         db_table = 'user_paintings'
         ordering = ('id',)
+        unique_together = ('user', 'painting')
         verbose_name = _('user painting')
         verbose_name_plural = _('user paintings')
 
@@ -60,14 +61,20 @@ class UserPainting(Model):
         return self.painting.title
 
     @property
-    def layers(self):
+    def finish(self):
+        finish = all([layer.finish for layer in self.get_layers.all()])
+        return finish
+
+    @property
+    def get_layers(self):
         return self.layers.filter(user_painting=self)
 
 
 class UserPaintingLayer(Model):
     finish = BooleanField(_('finish'), default=False)
     user_painting = ForeignKey(
-        UserPainting, null=True, on_delete=CASCADE, related_name='layers', verbose_name=_('user painting')
+        UserPainting, null=True, on_delete=CASCADE,
+        related_name='layers', verbose_name=_('user painting')
     )
     painting_layer = ForeignKey(
         PaintingLayer, null=True, on_delete=CASCADE,
