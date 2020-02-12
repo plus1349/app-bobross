@@ -22,7 +22,7 @@ class PaintingAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('enabled', 'free')}),
         (_('Relations'), {'fields': ('category',)}),
-        (_('Info'), {'fields': ('position', 'title', 'image')}),
+        (_('Info'), {'fields': ('position', 'title', 'image', 'archive')}),
     )
     inlines = (PaintingLayerAdmin,)
     list_display = ('id', 'enabled', 'category', 'position', 'title')

@@ -1,9 +1,9 @@
 from django.db.models import (
-    BooleanField, CharField, ForeignKey, ImageField, PositiveIntegerField, Model, CASCADE, SET_NULL
+    BooleanField, CharField, FileField, ForeignKey, ImageField, PositiveIntegerField, Model, CASCADE, SET_NULL
 )
 from django.utils.translation import ugettext_lazy as _
 
-from bobross.utils import upload_to
+from bobross.utils import file_directory, image_directory
 
 
 class Category(Model):
@@ -39,7 +39,8 @@ class Painting(Model):
         related_name='paintings', verbose_name=_('category')
     )
     title = CharField(_('title'), null=True, max_length=255)
-    image = ImageField(_('image'), null=True, upload_to=upload_to)
+    image = ImageField(_('image'), null=True, upload_to=image_directory)
+    archive = FileField(_('archive'), null=True, upload_to=file_directory)
 
     class Meta:
         db_table = 'paintings'
@@ -52,6 +53,10 @@ class Painting(Model):
 
     @property
     def file_directory(self):
+        return 'paintings/archives/'
+
+    @property
+    def image_directory(self):
         return 'paintings/images/'
 
     @property
@@ -67,7 +72,7 @@ class Painting(Model):
 class PaintingLayer(Model):
     position = PositiveIntegerField(_('position'), blank=True, null=True)
     painting = ForeignKey(Painting, null=True, on_delete=CASCADE, related_name='layers', verbose_name=_('painting'))
-    image = ImageField(_('image'), null=True, upload_to=upload_to)
+    image = ImageField(_('image'), null=True, upload_to=image_directory)
 
     class Meta:
         db_table = 'painting_layers'

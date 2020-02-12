@@ -16,6 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = CharField(_('name'), blank=True, max_length=255)
     phone = CharField(_('phone'), blank=True, max_length=15)
     email = EmailField(_('email'), max_length=255, unique=True)
+    device_id = CharField(_('device id'), null=True, max_length=255, unique=True)
     is_staff = BooleanField(_('is staff'), default=False)
     date_joined = DateTimeField(_('date joined'), default=timezone.now)
 

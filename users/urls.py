@@ -1,13 +1,14 @@
 from django.urls import path
 
 from users.views import (
-    user_login, user_logout,
+    user_auth, user_login, user_logout,
     UserCategoryListAPIView, UserPaintingFinishListAPIView, UserPaintingLayerAPIView, UserPaintingLayerFinishAPIView,
     UserPaintingListAPIView, UserPaintingRetrieveAPIView, UserPaintingStartListAPIView, UserProfileAPIView
 )
 
 
 urlpatterns = [
+    path('auth/', user_auth, name='user_auth'),
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('categories/', UserCategoryListAPIView.as_view(), name='user_category_list'),

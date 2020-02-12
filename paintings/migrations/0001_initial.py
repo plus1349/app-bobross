@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('free', models.BooleanField(default=False, verbose_name='free')),
                 ('position', models.PositiveIntegerField(blank=True, null=True, verbose_name='position')),
                 ('title', models.CharField(max_length=255, null=True, verbose_name='title')),
-                ('image', models.ImageField(null=True, upload_to=bobross.utils.upload_to, verbose_name='image')),
+                ('image', models.ImageField(null=True, upload_to=bobross.utils.image_directory, verbose_name='image')),
                 ('category', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='paintings', to='paintings.Category', verbose_name='category')),
             ],
             options={
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('position', models.PositiveIntegerField(blank=True, null=True, verbose_name='position')),
-                ('image', models.ImageField(null=True, upload_to=bobross.utils.upload_to, verbose_name='image')),
+                ('image', models.ImageField(null=True, upload_to=bobross.utils.image_directory, verbose_name='image')),
                 ('painting', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='layers', to='paintings.Painting', verbose_name='painting')),
             ],
             options={

@@ -6,7 +6,9 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+from rest_framework.status import (
+    HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+)
 from rest_framework.views import APIView
 
 from paintings.models import Category, Painting
@@ -14,7 +16,7 @@ from paintings.serializers import CategoryListSerializer, PaintingListSerializer
 
 from users.models import User, UserPainting, UserPaintingLayer
 from users.serializers import (
-    UserLoginSerializer, UserPaintingLayerRetrieveSerializer, UserPaintingListSerializer,
+    UserAuthSerializer, UserLoginSerializer, UserPaintingLayerRetrieveSerializer, UserPaintingListSerializer,
     UserPaintingRetrieveSerializer, UserProfileSerializer
 )
 
@@ -43,6 +45,23 @@ def user_login(request):
 
     data = dict(success=False, error="Invalid user login input")
     return Response(data=data, status=HTTP_400_BAD_REQUEST)
+
+
+@api_view(('POST',))
+def user_auth(request):
+    serializer = UserAuthSerializer(data=request.data)
+    if serializer.is_valid():
+        device_id = serializer.validated_data['deviceId']
+        user = User.objects.filter(device_id=device_id)
+        if user.exists():
+            user = user.first()
+            token, c = Token.objects.get_or_create(user=user)
+            return Response({"token": token.key})
+        user = User.objects.create(email='{device_id}@example.com'.format(device_id=device_id), device_id=device_id)
+        user.set_password(device_id)
+        user.save()
+        token, c = Token.objects.get_or_create(user=user)
+        return Response({"token": token.key}, status=HTTP_201_CREATED)
 
 
 @api_view(('POST',))

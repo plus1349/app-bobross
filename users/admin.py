@@ -52,14 +52,14 @@ class UserAdmin(BaseUserAdmin):
     change_password_form = AdminPasswordChangeForm
     fieldsets = (
         (None, {'fields': ('password',)}),
-        (_('Personal info'), {'fields': ('name', 'email', 'phone')}),
+        (_('Personal info'), {'fields': ('email', 'device_id', 'name', 'phone')}),
         (_('Permissions'), {'fields': ('is_staff', 'is_superuser', 'user_permissions')}),
         (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
     )
     form = UserUpdateForm
     inlines = (TokenAdmin,)
-    list_display = ('id', 'name', 'email', 'is_superuser', 'auth_token')
-    list_display_links = ('name', 'email')
+    list_display = ('id', 'email', 'device_id', 'is_superuser', 'auth_token')
+    list_display_links = ('email', 'device_id')
     list_filter = ('is_staff', 'is_superuser')
     readonly_fields = ('date_joined', 'last_login')
     search_fields = ('name', 'email')

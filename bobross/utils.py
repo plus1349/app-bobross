@@ -2,7 +2,7 @@ import os
 import uuid
 
 
-ABBREVIATIONS = ['url']
+ABBREVIATIONS = []
 
 
 def camelcase(word):
@@ -16,10 +16,23 @@ def pascalcase(word):
     )
 
 
-def upload_to(obj, filename):
-    if hasattr(obj, 'file_directory'):
+def file_directory(instance, filename):
+    if hasattr(instance, 'file_directory'):
+        return os.path.join(instance.file_directory, filename)
+
+    error = """{name} does not have 'file_directory' or 'image_directory' attribute""".format(
+        name=instance.__class__.__name__
+    )
+    raise AttributeError(error)
+
+
+def image_directory(instance, filename):
+    if hasattr(instance, 'image_directory'):
         extension = filename.split('.')[-1]
         filename = "%s.%s" % (uuid.uuid4(), extension)
-        return os.path.join(obj.file_directory, filename)
-    else:
-        raise AttributeError("%s does not have 'file_directory' attribute" % obj.__class__.__name__)
+
+        return os.path.join(instance.image_directory, filename)
+    error = "{name} does not have 'file_directory' or 'image_directory' attribute".format(
+        name=instance.__class__.__name__
+    )
+    raise AttributeError(error)

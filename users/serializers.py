@@ -5,6 +5,13 @@ from api.serializers import ModelSerializer
 from users.models import User, UserPainting, UserPaintingLayer
 
 
+class UserAuthSerializer(Serializer):
+    deviceId = CharField(max_length=255)
+
+    class Meta:
+        fields = ('deviceId',)
+
+
 class UserLoginSerializer(Serializer):
     email = EmailField(max_length=255)
     password = CharField(max_length=128)
