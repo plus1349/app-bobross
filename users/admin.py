@@ -30,12 +30,13 @@ class UserPaintingLayerAdmin(TabularInline):
 class UserPaintingAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('finish',)}),
-        (_('Relations'), {'fields': ('user', 'painting')})
+        (_('Relations'), {'fields': ('user', 'painting')}),
+        (_('Files'), {'fields': ('progress',)})
     )
-    inlines = (UserPaintingLayerAdmin,)
-    list_display = ('id', 'finish', 'user', 'painting')
-    list_display_links = ('id', 'finish', 'user', 'painting')
-    list_filter = ('user',)
+    # inlines = (UserPaintingLayerAdmin,)
+    list_display = ('id', 'user', 'painting')
+    list_display_links = ('user', 'painting')
+    list_filter = ('painting', 'user')
     readonly_fields = ('finish',)
     search_fields = ('user', 'painting')
 
@@ -43,24 +44,21 @@ class UserPaintingAdmin(ModelAdmin):
 @register(User)
 class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('password1', 'password2')
-        }),
+        (None, {'fields': ('password1', 'password2')}),
     )
     add_form = UserCreateForm
     change_password_form = AdminPasswordChangeForm
     fieldsets = (
-        (None, {'fields': ('password',)}),
+        (None, {'fields': ('password', 'auth_token')}),
         (_('Personal info'), {'fields': ('email', 'device_id', 'name', 'phone')}),
+        (_('Files'), {'fields': ('state',)}),
         (_('Permissions'), {'fields': ('is_staff', 'is_superuser', 'user_permissions')}),
         (_('Important dates'), {'fields': ('date_joined', 'last_login')}),
     )
     form = UserUpdateForm
-    inlines = (TokenAdmin,)
-    list_display = ('id', 'email', 'device_id', 'is_superuser', 'auth_token')
+    list_display = ('id', 'email', 'device_id', 'auth_token')
     list_display_links = ('email', 'device_id')
     list_filter = ('is_staff', 'is_superuser')
-    readonly_fields = ('date_joined', 'last_login')
+    readonly_fields = ('date_joined', 'last_login', 'auth_token')
     search_fields = ('name', 'email')
     ordering = ()

@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', user_login, name='user_login'),
     path('logout/', user_logout, name='user_logout'),
     path('categories/', UserCategoryListAPIView.as_view(), name='user_category_list'),
+    path('paintings/', UserPaintingListAPIView.as_view(), name='user_painting_list'),
     path('paintings/finish/', UserPaintingFinishListAPIView.as_view(), name='user_painting_finish_list'),
     path('paintings/start/', UserPaintingStartListAPIView.as_view(), name='user_painting_start_list'),
     # path('paintings/<int:category>/', UserPaintingListAPIView.as_view()),

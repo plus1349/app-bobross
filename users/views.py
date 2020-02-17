@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
@@ -56,6 +57,8 @@ def user_auth(request):
         if user.exists():
             user = user.first()
             token, c = Token.objects.get_or_create(user=user)
+            user.last_login = timezone.now()
+            user.save(update_fields=('last_login',))
             return Response({"token": token.key})
         user = User.objects.create(email='{device_id}@example.com'.format(device_id=device_id), device_id=device_id)
         user.set_password(device_id)
@@ -135,11 +138,8 @@ class UserPaintingListAPIView(ListAPIView):
     queryset = UserPainting.objects.all()
     serializer_class = UserPaintingListSerializer
 
-    def get_object(self):
-        return get_object_or_404(Category, id=self.kwargs['id'])
-
     def get_queryset(self):
-        queryset = super().get_queryset().filter(painting__category=self.get_object(), user=self.request.user)
+        queryset = super().get_queryset().filter(user=self.request.user)
         return queryset
 
     def list(self, request, *args, **kwargs):

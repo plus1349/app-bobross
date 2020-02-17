@@ -1,15 +1,12 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.db.models import (
-    CASCADE,
-    BooleanField, CharField, DateTimeField, EmailField, ForeignKey,
-    Model
-)
+from django.db.models import BooleanField, CharField, DateTimeField, EmailField, FileField, ForeignKey, Model, CASCADE
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-from users.managers import UserManager
+from bobross.utils import file_directory
 from paintings.models import Painting, PaintingLayer
+from users.managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -19,6 +16,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     device_id = CharField(_('device id'), null=True, max_length=255, unique=True)
     is_staff = BooleanField(_('is staff'), default=False)
     date_joined = DateTimeField(_('date joined'), default=timezone.now)
+    state = FileField(_('state'), blank=True, null=True, upload_to=file_directory)
 
     objects = UserManager()
 
@@ -28,7 +26,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = 'users'
-        ordering = ('is_superuser', 'id')
+        ordering = ('-is_superuser', '-is_staff', 'id')
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
@@ -38,6 +36,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+    @property
+    def file_directory(self):
+        return 'users/states/'
 
     @property
     def paintings(self):
@@ -50,6 +52,7 @@ class UserPainting(Model):
         Painting, null=True, on_delete=CASCADE,
         related_name='user_paintings', verbose_name=_('painting')
     )
+    progress = FileField(_('progress'), null=True, upload_to=file_directory)
 
     class Meta:
         db_table = 'user_paintings'
@@ -60,6 +63,10 @@ class UserPainting(Model):
 
     def __str__(self):
         return self.painting.title
+
+    @property
+    def file_directory(self):
+        return 'users/paintings/progress/'
 
     @property
     def finish(self):

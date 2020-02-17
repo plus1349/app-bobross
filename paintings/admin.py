@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from paintings.models import Category, Painting, PaintingLayer
 
 
-@register(Category)
+# @register(Category)
 class CategoryAdmin(ModelAdmin):
     list_display = ('id', 'enabled', 'position', 'title')
     list_display_links = ('title',)
@@ -21,12 +21,14 @@ class PaintingLayerAdmin(TabularInline):
 class PaintingAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('enabled', 'free')}),
-        (_('Relations'), {'fields': ('category',)}),
-        (_('Info'), {'fields': ('position', 'title', 'image', 'archive')}),
+        # (_('Relations'), {'fields': ('category',)}),
+        (_('Info'), {'fields': ('position', 'title')}),
+        (_('Files'), {'fields': ('image', 'archive')})
     )
-    inlines = (PaintingLayerAdmin,)
-    list_display = ('id', 'enabled', 'category', 'position', 'title')
+    # inlines = (PaintingLayerAdmin,)
+    # list_display = ('id', 'enabled', 'category', 'position', 'title')
+    list_display = ('id', 'enabled', 'position', 'title')
     list_display_links = ('title',)
     list_editable = ('enabled', 'position')
-    list_filter = ('category',)
+    # list_filter = ('category',)
     ordering = ('category', 'position', 'title')

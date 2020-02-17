@@ -3,7 +3,7 @@ from django.db.models import (
 )
 from django.utils.translation import ugettext_lazy as _
 
-from bobross.utils import file_directory, image_directory
+from bobross.utils import image_directory, file_directory
 
 
 class Category(Model):

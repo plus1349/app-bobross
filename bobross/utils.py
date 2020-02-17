@@ -18,21 +18,25 @@ def pascalcase(word):
 
 def file_directory(instance, filename):
     if hasattr(instance, 'file_directory'):
+        extension = filename.split('.')[-1]
+        filename = "%s.%s" % (uuid.uuid4(), extension)
         return os.path.join(instance.file_directory, filename)
 
-    error = """{name} does not have 'file_directory' or 'image_directory' attribute""".format(
-        name=instance.__class__.__name__
+    raise AttributeError(
+        "{name} does not have 'file_directory' attribute".format(
+            name=instance.__class__.__name__
+        )
     )
-    raise AttributeError(error)
 
 
 def image_directory(instance, filename):
     if hasattr(instance, 'image_directory'):
         extension = filename.split('.')[-1]
         filename = "%s.%s" % (uuid.uuid4(), extension)
-
         return os.path.join(instance.image_directory, filename)
-    error = "{name} does not have 'file_directory' or 'image_directory' attribute".format(
-        name=instance.__class__.__name__
+
+    raise AttributeError(
+        "{name} does not have 'image_directory' attribute".format(
+            name=instance.__class__.__name__
+        )
     )
-    raise AttributeError(error)

@@ -26,7 +26,7 @@ class PaintingListSerializer(ModelSerializer):
     archive_url = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'free', 'title', 'image_url', 'archive_url')
+        fields = ('id', 'free', 'title', 'archive_url', 'image_url')
         model = Painting
 
     def get_archive_url(self, instance):
@@ -39,12 +39,19 @@ class PaintingListSerializer(ModelSerializer):
 
 
 class PaintingRetrieveSerializer(ModelSerializer):
+    archive_url = SerializerMethodField()
     image_url = SerializerMethodField()
-    layers = PaintingLayerListSerializer(many=True)
+    # layers = PaintingLayerListSerializer(many=True)
 
     class Meta:
-        fields = ('id', 'free', 'title', 'image_url', 'layers')
+        # fields = ('id', 'free', 'title', 'image_url', 'layers')
+        fields = ('id', 'free', 'title', 'archive_url', 'image_url')
         model = Painting
 
+    def get_archive_url(self, instance):
+        if instance.archive:
+            return self.context['request'].build_absolute_uri(instance.archive.url)
+
     def get_image_url(self, instance):
-        return self.context['request'].build_absolute_uri(instance.image.url)
+        if instance.image:
+            return self.context['request'].build_absolute_uri(instance.image.url)

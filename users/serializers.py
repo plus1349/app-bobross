@@ -43,20 +43,40 @@ class UserPaintingLayerRetrieveSerializer(ModelSerializer):
 
 
 class UserPaintingListSerializer(ModelSerializer):
+    archive_url = SerializerMethodField()
+    # finish = SerializerMethodField()
     free = SerializerMethodField()
     image_url = SerializerMethodField()
+    progress_url = SerializerMethodField()
     title = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'finish', 'free', 'title', 'image_url')
+        fields = ('id', 'free', 'title', 'archive_url', 'image_url', 'progress_url')
         model = UserPainting
+
+    def get_archive_url(self, instance):
+        if instance.painting.archive:
+            return self.context['request'].build_absolute_uri(instance.painting.archive.url)
 
     @staticmethod
     def get_free(instance):
         return instance.painting.free
 
+    # @staticmethod
+    # def get_finish(instance):
+    #     finish = True
+    #     for layer in instance.layers.all():
+    #         if layer.finish is False:
+    #             finish = False
+    #     return finish
+
     def get_image_url(self, instance):
-        return self.context['request'].build_absolute_uri(instance.painting.image.url)
+        if instance.painting.image:
+            return self.context['request'].build_absolute_uri(instance.painting.image.url)
+
+    def get_progress_url(self, instance):
+        if instance.progress:
+            return self.context['request'].build_absolute_uri(instance.progress.url)
 
     @staticmethod
     def get_title(instance):
@@ -64,24 +84,28 @@ class UserPaintingListSerializer(ModelSerializer):
 
 
 class UserPaintingRetrieveSerializer(ModelSerializer):
-    finish = SerializerMethodField()
+    archive_url = SerializerMethodField()
+    # finish = SerializerMethodField()
     free = SerializerMethodField()
-    title = SerializerMethodField()
     image_url = SerializerMethodField()
-    layers = UserPaintingLayerListSerializer(many=True)
+    # layers = UserPaintingLayerListSerializer(many=True)
+    title = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'free', 'finish', 'title', 'image_url', 'layers')
+        fields = ('id', 'free', 'title', 'image_url', 'archive_url')
         model = UserPainting
 
+    def get_archive_url(self, instance):
+        if instance.painting.archive:
+            return self.context['request'].build_absolute_uri(instance.painting.archive.url)
 
-    @staticmethod
-    def get_finish(instance):
-        finish = True
-        for layer in instance.layers.all():
-            if layer.finish is False:
-                finish = False
-        return finish
+    # @staticmethod
+    # def get_finish(instance):
+    #     finish = True
+    #     for layer in instance.layers.all():
+    #         if layer.finish is False:
+    #             finish = False
+    #     return finish
 
     @staticmethod
     def get_free(instance):
@@ -96,6 +120,12 @@ class UserPaintingRetrieveSerializer(ModelSerializer):
 
 
 class UserProfileSerializer(ModelSerializer):
+    state_url = SerializerMethodField()
+
     class Meta:
-        fields = ('id', 'email', 'name')
+        fields = ('id', 'email', 'name', 'phone', 'device_id', 'state_url')
         model = User
+
+    def get_state_url(self, instance):
+        if instance.state:
+            return self.context['request'].build_absolute_uri(instance.state.url)
