@@ -26,7 +26,6 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Meta:
         db_table = 'users'
-        ordering = ('-is_superuser', '-is_staff', 'id')
         verbose_name = _('user')
         verbose_name_plural = _('users')
 
@@ -56,7 +55,6 @@ class UserPainting(Model):
 
     class Meta:
         db_table = 'user_paintings'
-        ordering = ('id',)
         unique_together = ('user', 'painting')
         verbose_name = _('user painting')
         verbose_name_plural = _('user paintings')

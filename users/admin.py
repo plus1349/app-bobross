@@ -33,12 +33,11 @@ class UserPaintingAdmin(ModelAdmin):
         (_('Relations'), {'fields': ('user', 'painting')}),
         (_('Files'), {'fields': ('progress',)})
     )
-    # inlines = (UserPaintingLayerAdmin,)
     list_display = ('id', 'user', 'painting')
     list_display_links = ('user', 'painting')
-    list_filter = ('painting', 'user')
-    readonly_fields = ('finish',)
-    search_fields = ('user', 'painting')
+    list_filter = ('painting', 'user', 'painting__free', 'painting__layers_count', 'painting__size_name')
+    ordering = ('painting__position', 'painting__title', 'painting__id', 'id')
+    search_fields = ('painting__title',)
 
 
 @register(User)
@@ -48,6 +47,7 @@ class UserAdmin(BaseUserAdmin):
     )
     add_form = UserCreateForm
     change_password_form = AdminPasswordChangeForm
+    date_hierarchy = 'date_joined'
     fieldsets = (
         (None, {'fields': ('password', 'auth_token')}),
         (_('Personal info'), {'fields': ('email', 'device_id', 'name', 'phone')}),
@@ -61,4 +61,4 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_staff', 'is_superuser')
     readonly_fields = ('date_joined', 'last_login', 'auth_token')
     search_fields = ('name', 'email')
-    ordering = ()
+    ordering = ('-is_superuser', '-is_staff', 'id', 'email', 'name')

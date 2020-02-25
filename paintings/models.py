@@ -41,10 +41,11 @@ class Painting(Model):
     title = CharField(_('title'), null=True, max_length=255)
     image = ImageField(_('image'), null=True, upload_to=image_directory)
     archive = FileField(_('archive'), null=True, upload_to=file_directory)
+    layers_count = PositiveIntegerField(_('layers count'), null=True)
+    size_name = CharField(_('size name'), null=True, max_length=55)
 
     class Meta:
         db_table = 'paintings'
-        ordering = ('position', 'title')
         verbose_name = _('painting')
         verbose_name_plural = _('paintings')
 

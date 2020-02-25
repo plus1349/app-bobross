@@ -1,4 +1,5 @@
-from rest_framework.fields import SerializerMethodField
+from rest_framework.fields import FileField, SerializerMethodField
+from rest_framework.serializers import ModelSerializer as BaseModelSerializer
 
 from api.serializers import ModelSerializer
 from paintings.models import Category, PaintingLayer, Painting
@@ -26,7 +27,7 @@ class PaintingListSerializer(ModelSerializer):
     archive_url = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'free', 'title', 'archive_url', 'image_url')
+        fields = ('id', 'free', 'title', 'layers_count', 'size_name', 'archive_url', 'image_url')
         model = Painting
 
     def get_archive_url(self, instance):
@@ -45,7 +46,7 @@ class PaintingRetrieveSerializer(ModelSerializer):
 
     class Meta:
         # fields = ('id', 'free', 'title', 'image_url', 'layers')
-        fields = ('id', 'free', 'title', 'archive_url', 'image_url')
+        fields = ('id', 'free', 'title', 'layers_count', 'size_name', 'archive_url', 'image_url')
         model = Painting
 
     def get_archive_url(self, instance):

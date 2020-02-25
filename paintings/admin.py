@@ -21,14 +21,12 @@ class PaintingLayerAdmin(TabularInline):
 class PaintingAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('enabled', 'free')}),
-        # (_('Relations'), {'fields': ('category',)}),
-        (_('Info'), {'fields': ('position', 'title')}),
+        (_('Info'), {'fields': ('position', 'layers_count', 'title', 'size_name')}),
         (_('Files'), {'fields': ('image', 'archive')})
     )
-    # inlines = (PaintingLayerAdmin,)
-    # list_display = ('id', 'enabled', 'category', 'position', 'title')
-    list_display = ('id', 'enabled', 'position', 'title')
-    list_display_links = ('title',)
-    list_editable = ('enabled', 'position')
-    # list_filter = ('category',)
-    ordering = ('category', 'position', 'title')
+    list_display = ('id', 'enabled', 'position', 'layers_count', 'title', 'size_name')
+    list_display_links = ('id', 'title', 'size_name')
+    list_editable = ('enabled', 'position', 'layers_count')
+    list_filter = ('enabled', 'free', 'layers_count', 'size_name',)
+    ordering = ('position', 'title', 'id')
+    search_fields = ('title', )

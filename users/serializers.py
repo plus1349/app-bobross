@@ -47,11 +47,13 @@ class UserPaintingListSerializer(ModelSerializer):
     # finish = SerializerMethodField()
     free = SerializerMethodField()
     image_url = SerializerMethodField()
+    layers_count = SerializerMethodField()
     progress_url = SerializerMethodField()
+    size_name = SerializerMethodField()
     title = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'free', 'title', 'archive_url', 'image_url', 'progress_url')
+        fields = ('id', 'free', 'title', 'layers_count', 'size_name', 'archive_url', 'image_url', 'progress_url')
         model = UserPainting
 
     def get_archive_url(self, instance):
@@ -74,9 +76,17 @@ class UserPaintingListSerializer(ModelSerializer):
         if instance.painting.image:
             return self.context['request'].build_absolute_uri(instance.painting.image.url)
 
+    @staticmethod
+    def get_layers_count(instance):
+        return instance.painting.layers_count
+
     def get_progress_url(self, instance):
         if instance.progress:
             return self.context['request'].build_absolute_uri(instance.progress.url)
+
+    @staticmethod
+    def get_size_name(instance):
+        return instance.painting.size_name
 
     @staticmethod
     def get_title(instance):
@@ -88,11 +98,14 @@ class UserPaintingRetrieveSerializer(ModelSerializer):
     # finish = SerializerMethodField()
     free = SerializerMethodField()
     image_url = SerializerMethodField()
+    layers_count = SerializerMethodField()
+    progress_url = SerializerMethodField()
+    size_name = SerializerMethodField()
     # layers = UserPaintingLayerListSerializer(many=True)
     title = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'free', 'title', 'image_url', 'archive_url')
+        fields = ('id', 'free', 'title', 'layers_count', 'size_name', 'archive_url', 'image_url', 'progress_url')
         model = UserPainting
 
     def get_archive_url(self, instance):
@@ -113,6 +126,18 @@ class UserPaintingRetrieveSerializer(ModelSerializer):
 
     def get_image_url(self, instance):
         return self.context['request'].build_absolute_uri(instance.painting.image.url)
+
+    @staticmethod
+    def get_layers_count(instance):
+        return instance.painting.layers_count
+
+    def get_progress_url(self, instance):
+        if instance.progress:
+            return self.context['request'].build_absolute_uri(instance.progress.url)
+
+    @staticmethod
+    def get_size_name(instance):
+        return instance.painting.size_name
 
     @staticmethod
     def get_title(instance):
