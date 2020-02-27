@@ -2,6 +2,7 @@ from django.contrib.admin import register, site, ModelAdmin, TabularInline
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.models import Group
+from django.utils.html import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 from rest_framework.authtoken.models import Token
@@ -29,7 +30,6 @@ class UserPaintingLayerAdmin(TabularInline):
 @register(UserPainting)
 class UserPaintingAdmin(ModelAdmin):
     fieldsets = (
-        (None, {'fields': ('finish',)}),
         (_('Relations'), {'fields': ('user', 'painting')}),
         (_('Files'), {'fields': ('progress',)})
     )

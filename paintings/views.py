@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_402_PAYMENT_REQUIRED
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_402_PAYMENT_REQUIRED, HTTP_409_CONFLICT
 from rest_framework.views import APIView
 
 from paintings.models import Category, Painting
@@ -22,7 +22,7 @@ class CategoryListAPIView(ListAPIView):
         return Response({'results': serializer.data})
 
 
-class PaintingAddAPIView(APIView):
+class PaintingUpdateAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
     @property
@@ -34,44 +34,21 @@ class PaintingAddAPIView(APIView):
         if painting.free:
             if 'progress' in request.FILES:
                 user_painting, created = UserPainting.objects.get_or_create(painting=painting, user=request.user)
+                status = HTTP_201_CREATED
                 if not created:
-                    data = dict(success=False, error="User painting already exists")
-                    return Response(data=data, status=HTTP_400_BAD_REQUEST)
+                    status = HTTP_200_OK
 
                 user_painting.progress = request.FILES['progress']
                 user_painting.save(update_fields=('progress',))
 
                 data = dict(success=True)
-                return Response(data=data, status=HTTP_200_OK)
+                return Response(data=data, status=status)
 
             data = dict(success=False, error="Invalid progress file input")
             return Response(data=data, status=HTTP_400_BAD_REQUEST)
 
         data = dict(success=False, error="Painting is not free")
         return Response(data=data, status=HTTP_402_PAYMENT_REQUIRED)
-
-
-        # painting = self.get_object
-        # if painting.free:
-        #     user_painting, created = UserPainting.objects.get_or_create(user=self.request.user, painting=painting)
-        #     if not created:
-        #         data = dict(success=False, error="User painting already exists")
-        #         return Response(data=data, status=HTTP_400_BAD_REQUEST)
-        #
-        #     for painting_layer in painting.layers.all():
-        #         user_painting_layer, created = UserPaintingLayer.objects.get_or_create(
-        #             user_painting=user_painting,
-        #             painting_layer=painting_layer
-        #         )
-        #         if not created:
-        #             data = dict(success=False, error="User painting layer already exists")
-        #             return Response(data=data, status=HTTP_400_BAD_REQUEST)
-        #
-        #     data = dict(success=True)
-        #     return Response(data=data, status=HTTP_200_OK)
-        #
-        # data = dict(success=False, error="Painting is not free")
-        # return Response(data=data, status=HTTP_402_PAYMENT_REQUIRED)
 
 
 class PaintingCategoryListAPIView(ListAPIView):
