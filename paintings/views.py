@@ -1,25 +1,50 @@
 from django.shortcuts import get_object_or_404
 
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_402_PAYMENT_REQUIRED, HTTP_409_CONFLICT
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_402_PAYMENT_REQUIRED
 from rest_framework.views import APIView
 
-from paintings.models import Category, Painting
-from paintings.serializers import CategoryListSerializer, PaintingListSerializer, PaintingRetrieveSerializer
+from paintings.models import Painting
+from paintings.serializers import PaintingSerializer
 
-from users.models import UserPainting, UserPaintingLayer
+from users.models import UserPainting
+from users.serializers import UserPaintingCreateSerializer
 
 
-class CategoryListAPIView(ListAPIView):
-    queryset = Category.objects.filter(enabled=True)
-    serializer_class = CategoryListSerializer
+# class CategoryListAPIView(ListAPIView):
+#     queryset = Category.objects.filter(enabled=True)
+#     serializer_class = CategoryListSerializer
+#
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.filter_queryset(self.get_queryset())
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response({'results': serializer.data})
 
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({'results': serializer.data})
+
+class PaintingAddAPIView(CreateAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserPaintingCreateSerializer
+
+    @property
+    def get_object(self):
+        return get_object_or_404(Painting, id=self.kwargs['id'])
+
+    def create(self, request, *args, **kwargs):
+        painting = self.get_object
+        if painting.free:
+            serializer = self.get_serializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                data = dict(success=True)
+                return Response(data=data, status=HTTP_201_CREATED)
+
+            data = dict(success=False, error="Invalid progress file input")
+            return Response(data=data, status=HTTP_400_BAD_REQUEST)
+
+        data = dict(success=False, error="Painting is not free")
+        return Response(data=data, status=HTTP_402_PAYMENT_REQUIRED)
 
 
 class PaintingUpdateAPIView(APIView):
@@ -51,26 +76,26 @@ class PaintingUpdateAPIView(APIView):
         return Response(data=data, status=HTTP_402_PAYMENT_REQUIRED)
 
 
-class PaintingCategoryListAPIView(ListAPIView):
-    queryset = Painting.objects.filter(enabled=True)
-    serializer_class = PaintingListSerializer
-
-    def get_object(self):
-        return get_object_or_404(Category, id=self.kwargs['category'])
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.filter(category=self.get_object())
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({'results': serializer.data})
-
-
+# class PaintingCategoryListAPIView(ListAPIView):
+#     queryset = Painting.objects.filter(enabled=True)
+#     serializer_class = PaintingListSerializer
+#
+#     def get_object(self):
+#         return get_object_or_404(Category, id=self.kwargs['category'])
+#
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         return queryset.filter(category=self.get_object())
+#
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.filter_queryset(self.get_queryset())
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response({'results': serializer.data})
+#
+#
 class PaintingListAPIView(ListAPIView):
     queryset = Painting.objects.filter(enabled=True)
-    serializer_class = PaintingListSerializer
+    serializer_class = PaintingSerializer
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -83,7 +108,7 @@ class PaintingNewListAPIView(PaintingListAPIView):
 
 
 class PaintingRetrieveAPIView(RetrieveAPIView):
-    serializer_class = PaintingRetrieveSerializer
+    serializer_class = PaintingSerializer
 
     def get_object(self):
         return get_object_or_404(Painting, id=self.kwargs['id'])

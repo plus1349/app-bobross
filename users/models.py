@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
-from django.db.models import BooleanField, CharField, DateTimeField, EmailField, FileField, ForeignKey, Model, CASCADE
+from django.db.models import (
+    BooleanField, CharField, DateTimeField, EmailField, FileField, ForeignKey, Model, TextField, CASCADE
+)
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
@@ -16,7 +18,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     device_id = CharField(_('device id'), null=True, max_length=255, unique=True)
     is_staff = BooleanField(_('is staff'), default=False)
     date_joined = DateTimeField(_('date joined'), default=timezone.now)
-    state = FileField(_('state'), blank=True, null=True, upload_to=file_directory)
+    state = TextField(_('state'), blank=True, null=True)
 
     objects = UserManager()
 
@@ -46,16 +48,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
 class UserPainting(Model):
-    user = ForeignKey(User, null=True, on_delete=CASCADE, related_name='paintings', verbose_name=_('user'))
+    complexity = TextField(_('complexity'), blank=True, null=True)
     painting = ForeignKey(
         Painting, null=True, on_delete=CASCADE,
         related_name='user_paintings', verbose_name=_('painting')
     )
     progress = FileField(_('progress'), null=True, upload_to=file_directory)
+    user = ForeignKey(User, null=True, on_delete=CASCADE, related_name='paintings', verbose_name=_('user'))
 
     class Meta:
         db_table = 'user_paintings'
-        unique_together = ('user', 'painting')
         verbose_name = _('user painting')
         verbose_name_plural = _('user paintings')
 

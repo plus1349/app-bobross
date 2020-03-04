@@ -22,13 +22,13 @@ class PaintingLayerAdmin(TabularInline):
 class PaintingAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('enabled', 'free')}),
-        (_('Info'), {'fields': ('position', 'layers_count', 'title', 'size_name')}),
+        (_('Info'), {'fields': ('position', 'title')}),
         (_('Files'), {'fields': ('preview', 'image', 'archive')})
     )
-    list_display = ('id', 'enabled', 'position', 'layers_count', 'title', 'size_name')
-    list_display_links = ('id', 'title', 'size_name')
-    list_editable = ('enabled', 'position', 'layers_count')
-    list_filter = ('enabled', 'free', 'layers_count', 'size_name',)
+    list_display = ('id', 'enabled', 'position', 'title')
+    list_display_links = ('id', 'title')
+    list_editable = ('enabled', 'position')
+    list_filter = ('enabled', 'free')
     ordering = ('position', 'title', 'id')
     readonly_fields = ('preview',)
     search_fields = ('title', )
@@ -37,4 +37,3 @@ class PaintingAdmin(ModelAdmin):
     def preview(instance):
         if instance.image:
             return mark_safe('<img src="{src}" width="150" />'.format(src=instance.image.url))
-    # preview.short_description = 'Preview'

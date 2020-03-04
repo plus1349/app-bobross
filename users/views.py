@@ -4,21 +4,17 @@ from django.utils import timezone
 
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import (
-    HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
+    HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 )
-from rest_framework.views import APIView
 
-from paintings.models import Category, Painting
-from paintings.serializers import CategoryListSerializer, PaintingListSerializer
-
-from users.models import User, UserPainting, UserPaintingLayer
+from users.models import User, UserPainting
 from users.serializers import (
-    UserAuthSerializer, UserLoginSerializer, UserPaintingLayerRetrieveSerializer, UserPaintingListSerializer,
-    UserPaintingRetrieveSerializer, UserProfileSerializer
+    UserAuthSerializer, UserLoginSerializer, UserPaintingSerializer, UserPaintingUpdateSerializer,
+    UserProfileSerializer, UserStateUpdateSerializer
 )
 
 
@@ -77,34 +73,37 @@ def user_logout(request):
     return Response(data=data, status=HTTP_401_UNAUTHORIZED)
 
 
-class UserCategoryListAPIView(ListAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset = Category.objects.filter(enabled=True)
-    serializer_class = CategoryListSerializer
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        user_paintings = self.request.user.paintings.all()
-        categories_ids = [user_painting.painting.category.id for user_painting in user_paintings.all()]
-        return queryset.filter(id__in=categories_ids)
-
-    def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
-        serializer = self.get_serializer(queryset, many=True)
-        return Response({'results': serializer.data})
+# class UserCategoryListAPIView(ListAPIView):
+#     permission_classes = (IsAuthenticated,)
+#     queryset = Category.objects.filter(enabled=True)
+#     serializer_class = CategoryListSerializer
+#
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         user_paintings = self.request.user.paintings.all()
+#         categories_ids = [user_painting.painting.category.id for user_painting in user_paintings.all()]
+#         return queryset.filter(id__in=categories_ids)
+#
+#     def list(self, request, *args, **kwargs):
+#         queryset = self.filter_queryset(self.get_queryset())
+#         serializer = self.get_serializer(queryset, many=True)
+#         return Response({'results': serializer.data})
 
 
 class UserPaintingFinishListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = UserPainting.objects.all()
-    serializer_class = UserPaintingListSerializer
+    serializer_class = UserPaintingSerializer
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset().filter(user=self.request.user)
+    #     objects = list(filter(lambda obj: obj.finish is True, queryset.all()))
+    #     ids = [obj.id for obj in objects]
+    #     queryset = queryset.filter(id__in=ids)
+    #     return queryset
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(user=self.request.user)
-        objects = list(filter(lambda obj: obj.finish is True, queryset.all()))
-        ids = [obj.id for obj in objects]
-        queryset = queryset.filter(id__in=ids)
-        return queryset
+        return super().get_queryset().filter(user=self.request.user).none()
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -112,35 +111,34 @@ class UserPaintingFinishListAPIView(ListAPIView):
         return Response({'results': serializer.data})
 
 
-class UserPaintingLayerAPIView(RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
-    serializer_class = UserPaintingLayerRetrieveSerializer
+# class UserPaintingLayerAPIView(RetrieveAPIView):
+#     permission_classes = (IsAuthenticated,)
+#     serializer_class = UserPaintingLayerRetrieveSerializer
+#
+#     def get_object(self):
+#         return get_object_or_404(UserPaintingLayer, id=self.kwargs['id'])
 
-    def get_object(self):
-        return get_object_or_404(UserPaintingLayer, id=self.kwargs['id'])
 
-
-class UserPaintingLayerFinishAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        return get_object_or_404(UserPaintingLayer, id=self.kwargs['id'])
-
-    def post(self, request, *args, **kwargs):
-        user_painting_layer = self.get_object()
-        user_painting_layer.finish = True
-        user_painting_layer.save(update_fields=('finish',))
-        return Response({'success': True})
+# class UserPaintingLayerFinishAPIView(APIView):
+#     permission_classes = (IsAuthenticated,)
+#
+#     def get_object(self):
+#         return get_object_or_404(UserPaintingLayer, id=self.kwargs['id'])
+#
+#     def post(self, request, *args, **kwargs):
+#         user_painting_layer = self.get_object()
+#         user_painting_layer.finish = True
+#         user_painting_layer.save(update_fields=('finish',))
+#         return Response({'success': True})
 
 
 class UserPaintingListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = UserPainting.objects.all()
-    serializer_class = UserPaintingListSerializer
+    serializer_class = UserPaintingSerializer
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(user=self.request.user)
-        return queryset
+        return super().get_queryset().filter(user=self.request.user)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -149,28 +147,51 @@ class UserPaintingListAPIView(ListAPIView):
 
 
 class UserPaintingRetrieveAPIView(RetrieveAPIView):
-    serializer_class = UserPaintingRetrieveSerializer
+    serializer_class = UserPaintingSerializer
 
     def get_object(self):
-        return get_object_or_404(UserPainting, painting__id=self.kwargs['id'])
+        return get_object_or_404(UserPainting, id=self.kwargs['id'])
 
 
 class UserPaintingStartListAPIView(ListAPIView):
     permission_classes = (IsAuthenticated,)
     queryset = UserPainting.objects.all()
-    serializer_class = UserPaintingListSerializer
+    serializer_class = UserPaintingSerializer
+
+    # def get_queryset(self):
+    #     queryset = super().get_queryset().filter(user=self.request.user)
+    #     objects = list(filter(lambda obj: obj.finish is False, queryset.all()))
+    #     ids = [obj.id for obj in objects]
+    #     queryset = queryset.filter(id__in=ids)
+    #     return queryset
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(user=self.request.user)
-        objects = list(filter(lambda obj: obj.finish is False, queryset.all()))
-        ids = [obj.id for obj in objects]
-        queryset = queryset.filter(id__in=ids)
-        return queryset
+        return super().get_queryset().filter(user=self.request.user)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         serializer = self.get_serializer(queryset, many=True)
         return Response({'results': serializer.data})
+
+
+class UserPaintingUpdateAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserPaintingUpdateSerializer
+
+    @property
+    def get_object(self):
+        return get_object_or_404(UserPainting, id=self.kwargs['id'], user=self.request.user)
+
+    def post(self, request, *args, **kwargs):
+        user_painting = self.get_object
+        serializer = self.get_serializer(user_painting, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            data = dict(success=True)
+            return Response(data=data, status=HTTP_200_OK)
+
+        data = dict(success=False, error="Invalid user painting update input")
+        return Response(data=data, status=HTTP_400_BAD_REQUEST)
 
 
 class UserProfileAPIView(RetrieveAPIView):
@@ -179,3 +200,20 @@ class UserProfileAPIView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class UserStateUpdateAPIView(GenericAPIView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserStateUpdateSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            user = request.user
+            user.state = serializer.validated_data['state']
+            user.save(update_fields=('state',))
+            data = dict(success=True)
+            return Response(data=data, status=HTTP_200_OK)
+
+        data = dict(success=False, error="Invalid user state update input")
+        return Response(data=data, status=HTTP_400_BAD_REQUEST)
