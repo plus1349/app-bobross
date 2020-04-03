@@ -49,11 +49,12 @@ class UserPaintingSerializer(ModelSerializer):
     archive_url = SerializerMethodField()
     free = SerializerMethodField()
     image_url = SerializerMethodField()
+    painting_id = SerializerMethodField()
     progress_url = SerializerMethodField()
     title = SerializerMethodField()
 
     class Meta:
-        fields = ('id', 'free', 'title', 'complexity', 'archive_url', 'image_url', 'progress_url')
+        fields = ('id', 'painting_id', 'free', 'title', 'complexity', 'archive_url', 'image_url', 'progress_url')
         model = UserPainting
 
     def get_archive_url(self, instance):
@@ -66,6 +67,10 @@ class UserPaintingSerializer(ModelSerializer):
 
     def get_image_url(self, instance):
         return self.context['request'].build_absolute_uri(instance.painting.image.url)
+
+    @staticmethod
+    def get_painting_id(instance):
+        return instance.painting.id
 
     def get_progress_url(self, instance):
         if instance.progress:
