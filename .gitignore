@@ -2,6 +2,7 @@ env/
 .idea/
 media/
 uenv/
+venv/
 __pycache__/
 
 log/*

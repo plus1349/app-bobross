@@ -56,7 +56,7 @@ def user_auth(request):
             user.last_login = timezone.now()
             user.save(update_fields=('last_login',))
             return Response({"token": token.key})
-        user = User.objects.create(email='{device_id}@example.com'.format(device_id=device_id), device_id=device_id)
+        user = User.objects.create(email='{device_id}@example.com'.format(device_id=device_id[2:]), device_id=device_id)
         user.set_password(device_id)
         user.save()
         token, c = Token.objects.get_or_create(user=user)

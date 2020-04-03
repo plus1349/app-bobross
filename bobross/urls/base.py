@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.staticfiles.urls import static
-from django.shortcuts import HttpResponse, redirect
+from django.shortcuts import redirect
 from django.urls import path, include
 from django.utils.translation import ugettext_lazy as _
 
