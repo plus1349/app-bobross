@@ -4,15 +4,11 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 
-
 SECRET_KEY = 'mq(_@iwt8-h+k59spl%*^x9q2p+ex9i=e06px08*!1+w*(hzu&'
 
 DEBUG = False
 
-ALLOWED_HOSTS = []
-
-
-INSTALLED_APPS = [
+INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -21,18 +17,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
-    "rest_framework.authtoken",
+    'rest_framework.authtoken',
 
-    # 'django_hosts',
     'api',
-    # 'categories',
     'paintings',
-    'users'
-]
+    'users',
+)
 
-MIDDLEWARE = [
-    # 'django_hosts.middleware.HostsRequestMiddleware',
-
+MIDDLEWARE = (
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -41,19 +33,14 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-
-    # 'django_hosts.middleware.HostsResponseMiddleware',
-]
+)
 
 ROOT_URLCONF = 'bobross.urls.base'
 
-# ROOT_HOSTCONF = 'bobross.hosts'
-# DEFAULT_HOST = 'www'
-
-TEMPLATES = [
+TEMPLATES = (
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(ROOT_DIR, 'bobross', 'templates')],
+        'DIRS': (os.path.join(ROOT_DIR, 'bobross', 'templates'),),
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -64,7 +51,7 @@ TEMPLATES = [
             ],
         },
     },
-]
+)
 
 WSGI_APPLICATION = 'bobross.wsgi.application'
 
@@ -79,7 +66,7 @@ DATABASES = {
 }
 
 
-AUTH_PASSWORD_VALIDATORS = [
+AUTH_PASSWORD_VALIDATORS = (
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
@@ -92,13 +79,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
-]
+)
 
 LANGUAGE_CODE = 'en-us'
 
-LOCALE_PATHS = (
-    os.path.join(ROOT_DIR, 'bobross', 'locale'),
-)
+LOCALE_PATHS = (os.path.join(ROOT_DIR, 'bobross', 'locale'),)
 
 TIME_ZONE = 'UTC'
 
@@ -113,11 +98,9 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_URL = '/static/'
 
-# MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
-# MEDIA_URL = '/media/'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (

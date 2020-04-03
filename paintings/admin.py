@@ -23,17 +23,27 @@ class PaintingAdmin(ModelAdmin):
     fieldsets = (
         (None, {'fields': ('enabled', 'free')}),
         (_('Info'), {'fields': ('position', 'title')}),
-        (_('Files'), {'fields': ('preview', 'image', 'archive')})
+        (_('Files'), {'fields': ('thumnail', 'image', 'archive')})
     )
     list_display = ('id', 'enabled', 'position', 'title')
     list_display_links = ('id', 'title')
     list_editable = ('enabled', 'position')
     list_filter = ('enabled', 'free')
     ordering = ('position', 'title', 'id')
-    readonly_fields = ('preview',)
+    readonly_fields = ('thumnail',)
     search_fields = ('title', )
 
+    class Media:
+        css = {'all': ('css/custom.css',)}
+
     @staticmethod
-    def preview(instance):
+    def thumnail(instance):
         if instance.image:
-            return mark_safe('<img src="{src}" width="150" />'.format(src=instance.image.url))
+            return mark_safe(
+                """
+                <a target="_blank" href="{src}">
+                  <img alt="{alt}" src="{src}" class="thumbnail">
+                </a>
+                """.format(alt=instance.title, src=instance.image.url)
+            )
+        return str()
