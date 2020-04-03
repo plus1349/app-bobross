@@ -1,6 +1,6 @@
 from .base import *
 
-ALLOWED_HOSTS = ['138.68.14.229']
+ALLOWED_HOSTS = ['138.68.14.229', 'app-bobross.com']
 
 # DATABASES = {
 #     'default': {
@@ -15,11 +15,11 @@ ALLOWED_HOSTS = ['138.68.14.229']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'apipblho',
-        'USER': 'u_apipblho',
-        'PASSWORD': 'QS2vxA28',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'bobross',
+        'USER': 'bobross_user',
+        'PASSWORD': 'Qxb35A]5>x',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '',
     }
 }
