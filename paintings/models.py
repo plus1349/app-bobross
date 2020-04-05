@@ -1,6 +1,7 @@
 from django.db.models import (
     BooleanField, CharField, FileField, ForeignKey, ImageField, PositiveIntegerField, Model, CASCADE, SET_NULL
 )
+from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 from bobross.utils import image_directory, file_directory
@@ -51,6 +52,9 @@ class Painting(Model):
 
     def __str__(self):
         return self.title
+
+    def get_absolute_url(self):
+        return reverse('painting_retrieve', args=(self.id,))
 
     @property
     def file_directory(self):

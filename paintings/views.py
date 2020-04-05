@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render
+from django.views.generic import ListView
 
 from rest_framework.generics import CreateAPIView,ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -36,8 +37,8 @@ class PaintingAddAPIView(CreateAPIView):
         if painting.free:
             serializer = self.get_serializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
-                data = dict(success=True)
+                user_painting = serializer.save()
+                data = dict(id=user_painting.id, success=True)
                 return Response(data=data, status=HTTP_201_CREATED)
 
             data = dict(success=False, error="Invalid progress file input")
@@ -112,3 +113,17 @@ class PaintingRetrieveAPIView(RetrieveAPIView):
 
     def get_object(self):
         return get_object_or_404(Painting, id=self.kwargs['id'])
+
+
+# class PaintingListView(ListView):
+#     queryset = Painting.objects.filter(enabled=True)
+#     serializer_class = PaintingSerializer
+#     template_name = 'paintings/painting_list.html'
+#
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         self.object_list = self.get_queryset()
+#
+#     def get(self, request, *args, **kwargs):
+#         context = self.get_context_data(paintings=self.object_list)
+#         return render(request, self.template_name , context)

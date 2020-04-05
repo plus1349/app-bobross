@@ -35,7 +35,9 @@ class UserLoginSerializer(Serializer):
 
 class UserPaintingCreateSerializer(BaseModelSerializer):
     class Meta:
-        extra_kwargs = {'progress': {'required': True, 'allow_null': False, 'allow_blank': False}}
+        extra_kwargs = {
+            'progress': {'allow_null': False, 'required': True}
+        }
         fields = ('complexity', 'progress')
         model = UserPainting
 

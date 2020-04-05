@@ -31,7 +31,7 @@ class PaintingAdmin(ModelAdmin):
     list_filter = ('enabled', 'free')
     ordering = ('position', 'title', 'id')
     readonly_fields = ('thumnail',)
-    search_fields = ('title', )
+    search_fields = ('title',)
 
     class Media:
         css = {'all': ('css/custom.css',)}

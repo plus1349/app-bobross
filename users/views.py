@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN, HTTP_404_NOT_FOUND
 )
+from rest_framework.views import APIView
 
 from users.models import User, UserPainting
 from users.serializers import (
@@ -200,6 +201,17 @@ class UserProfileAPIView(RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+
+class UserStateClearAPIView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.state = str()
+        user.save(update_fields=('state',))
+        data = dict(success=True)
+        return Response(data=data, status=HTTP_200_OK)
 
 
 class UserStateUpdateAPIView(GenericAPIView):

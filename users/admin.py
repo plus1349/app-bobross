@@ -39,7 +39,7 @@ class UserAdmin(BaseUserAdmin):
     )
     form = UserUpdateForm
     list_display = ('id', 'email', 'device_id', 'auth_token')
-    list_display_links = ('email', 'device_id')
+    list_display_links = ('id', 'email', 'device_id')
     list_filter = ('is_staff', 'is_superuser')
     readonly_fields = ('date_joined', 'last_login', 'auth_token')
     search_fields = ('name', 'email')
@@ -52,7 +52,7 @@ class UserAdmin(BaseUserAdmin):
 @register(UserPainting)
 class UserPaintingAdmin(ModelAdmin):
     fieldsets = (
-        (_('Info'), {'fields': ('complexity',)}),
+        (None, {'fields': ('complexity',)}),
         (_('Relations'), {'fields': ('user', 'painting')}),
         (_('Files'), {'fields': ('progress',)})
     )
