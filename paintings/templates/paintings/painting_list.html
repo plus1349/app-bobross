@@ -1,0 +1,18 @@
+{% load i18n l10n staticfiles%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+  {% for painting in paintings %}
+    <p>id: {{ painting.id }}</p>
+    <p>free: {{ painting.free }}</p>
+    <p>title: {{ painting.title }}</p>
+    <p>archive: <a href="{{ painting.archive.url }}" target="_blank">{{ painting.archive.url }}</a></p>
+    <p>image: <a href="{{ painting.image.url|urlize }}" target="_blank">{{ painting.image.url|urlize }}</a></p><br>
+  {% endfor %}
+</body>
+</html>

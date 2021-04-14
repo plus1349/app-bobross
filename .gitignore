@@ -1,9 +1,10 @@
-env/
 .idea/
+__pycache__/
+env/
 media/
+static/
 uenv/
 venv/
-__pycache__/
 
 log/*
 media/*

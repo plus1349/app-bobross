@@ -1,0 +1,105 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <style>
+      .mobile-block {
+        border: 14px solid #000000;
+        border-radius: 50px;
+        position: absolute;
+        display: inline-block!important;
+      background-color: #e3e0e4;
+
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      .mobile-block video {
+            border-radius: 30px;
+          max-width: 343px;
+          width: 100%;
+          -o-object-fit: inherit;
+          object-fit: inherit;
+          display: inline-block!important;
+      }
+      .mobile-block:before {
+        content: "";
+          display: block;
+          height: 25px;
+          width: 100%;
+          z-index: 9999;
+          max-width: 168px;
+          position: absolute;
+          top: 0;
+          background-color: #000000;
+          border-bottom-right-radius: 19px;
+          border-bottom-left-radius: 19px;
+          left: 50%;
+          transform: translateX(-50%);
+      }
+      .row {
+        display: flex;
+      }
+      .left {
+        left: 0;
+      }
+      .right {
+        right: 0;
+      }
+
+      .column {
+        flex: 50%;
+        height: 100%;
+        width: 50%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        overflow-x: hidden;
+        padding-top: 20px;
+      }
+
+      .b {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <div class="column left">
+        <div class="a">
+          <div class="b">
+            <img src="{% static 'images/Ellipse 4.png' %}">
+          </div>
+          <div class="mobile-block">
+             <video poster="" autoplay="" muted="" loop="" playsinline="">
+               <source src="http://logics7.com/wp-content/uploads/2019/09/img_8565.mov" type="video/mp4">
+                Your browser does not support the video tag. I suggest you upgrade your browser.
+            </video>
+          </div>
+        </div>
+      </div>
+      <div class="column right">
+        <div class="a">
+          <div class="b">
+            <img src="{% static 'images/Ellipse 4.png' %}">
+          </div>
+          <div class="mobile-block">
+             <video poster="" autoplay="" muted="" loop="" playsinline="">
+               <source src="http://logics7.com/wp-content/uploads/2019/09/img_8565.mov" type="video/mp4">
+                Your browser does not support the video tag. I suggest you upgrade your browser.
+            </video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

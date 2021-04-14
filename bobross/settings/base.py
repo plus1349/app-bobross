@@ -11,20 +11,43 @@ SECRET_KEY = 'mq(_@iwt8-h+k59spl%*^x9q2p+ex9i=e06px08*!1+w*(hzu&'
 
 DEBUG = False
 
+SITE_ID = 1
+
 INSTALLED_APPS = (
+    'djangocms_admin_style', # required before 'django.contrib.admin'
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
 
+    'menus',
     'rest_framework',
     'rest_framework.authtoken',
+    'sekizai',
+    'treebeard',
+    'filer',
+    'easy_thumbnails',
+    'mptt',
 
     'api',
     'paintings',
     'users',
+
+    # required after custom apps
+    'cms',
+    'djangocms_text_ckeditor',
+    'djangocms_link',
+    'djangocms_file',
+    'djangocms_picture',
+    'djangocms_video',
+    'djangocms_googlemap',
+    'djangocms_snippet',
+    'djangocms_style',
+    'djangocms_column',
 )
 
 MIDDLEWARE = (
@@ -36,6 +59,12 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+
+    # 'cms.middleware.utils.ApphookReloadMiddleware',
+    'cms.middleware.user.CurrentUserMiddleware',
+    'cms.middleware.page.CurrentPageMiddleware',
+    'cms.middleware.toolbar.ToolbarMiddleware',
+    'cms.middleware.language.LanguageCookieMiddleware',
 )
 
 ROOT_URLCONF = 'bobross.urls.base'
@@ -51,9 +80,17 @@ TEMPLATES = (
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                'django.template.context_processors.i18n',
+                'cms.context_processors.cms_settings',
+                'sekizai.context_processors.sekizai',
             ],
         },
     },
+)
+
+CMS_TEMPLATES = (
+    ('base.html', 'Base'),
 )
 
 WSGI_APPLICATION = 'bobross.wsgi.application'
@@ -84,7 +121,7 @@ AUTH_PASSWORD_VALIDATORS = (
 
 _ = lambda x: x
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 LANGUAGES = (
     ('en', _('English')),
     ('ru', _('Russian'))
@@ -103,8 +140,8 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = (os.path.join(ROOT_DIR, 'static'),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = (os.path.join(ROOT_DIR, 'bobross', 'static'),)
+STATIC_ROOT = os.path.join(ROOT_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 
@@ -116,7 +153,6 @@ REST_FRAMEWORK = {
         'api.renderers.JSONRenderer',
     )
 }
-# from django.utils.log import DEFAULT_LOGGING
 
 DEFAULT_LOGGING = {
     'version': 1,
@@ -166,3 +202,11 @@ DEFAULT_LOGGING = {
     }
 }
 
+THUMBNAIL_HIGH_RESOLUTION = True
+
+THUMBNAIL_PROCESSORS = (
+    'easy_thumbnails.processors.colorspace',
+    'easy_thumbnails.processors.autocrop',
+    'filer.thumbnail_processors.scale_and_crop_with_subject_location',
+    'easy_thumbnails.processors.filters'
+)
